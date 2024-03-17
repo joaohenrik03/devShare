@@ -1,13 +1,31 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
 export const AuthContext = createContext({});
 
 export function AuthContextProvider({children}) {
-  const [connected, setConnected] = useState(false);
   const [user, setUser] = useState(null);
+
   const [authLoading, setAuthLoading] = useState(false);
+  const [fullLoading, setFullLoading] = useState(false);
+
+  useEffect(() => {
+    setFullLoading(true);
+    
+    async function getUserInLocalStorage() {
+      const response = await AsyncStorage.getItem('@devShare-1.0.0');
+    
+      if (response) {
+        setUser(JSON.parse(response))  
+      }
+
+      setFullLoading(false);
+    }
+
+    getUserInLocalStorage();
+  }, []);
 
   async function onSignUp(name, email, password) {
     setAuthLoading(true);
@@ -34,6 +52,7 @@ export function AuthContextProvider({children}) {
             }
 
             setUser(userData);
+            setUserInLocalStorage(userData);
             setConnected(true);
             setAuthLoading(false);
           })
@@ -70,6 +89,7 @@ export function AuthContextProvider({children}) {
             }
 
             setUser(userData);
+            setUserInLocalStorage(userData);
             setConnected(true);
             setAuthLoading(false);
           })
@@ -85,11 +105,15 @@ export function AuthContextProvider({children}) {
       })
   }
 
+  async function setUserInLocalStorage(userData) {
+    await AsyncStorage.setItem('@devShare-1.0.0', JSON.stringify(userData));
+  };
+
   return (
     <AuthContext.Provider value={{
-      connected,
       user,
       authLoading,
+      fullLoading,
       onSignUp,
       onSignIn
     }}>
