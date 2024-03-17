@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "949650115532",
+    "project_id": "devshare-bea7f",
+    "storage_bucket": "devshare-bea7f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:949650115532:android:9b2f4bcbb12d201974eb69",
+        "android_client_info": {
+          "package_name": "com.devshare"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwXveJwTzeEmDzBngbZBQTSM2YjtlBo3c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

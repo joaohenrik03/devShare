@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { Text } from "react-native";
+import { useContext, useState } from "react";
+import { ActivityIndicator, Text } from "react-native";
+import { AuthContext } from "../../Contexts/AuthContext";
 import { useNavigation } from "@react-navigation/native";
 import { 
   SingInContainer, 
@@ -14,10 +15,16 @@ import {
 } from "./styles";
 
 export function SignIn() {
+  const { onSignIn, authLoading } = useContext(AuthContext);
+
   const navigation = useNavigation();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  function handleSignIn() {
+    onSignIn(email, password);
+  }
 
   return (
     <SingInContainer>
@@ -45,11 +52,11 @@ export function SignIn() {
         />
 
         <SignInButton 
-          onPress={() => console.log('Fazer login')}
+          onPress={authLoading ? () => {} : handleSignIn}
           activeOpacity={0.8}
         >
           <SignInButtonText>
-            Acessar
+            {authLoading ? <ActivityIndicator size={24} color="#FFF" /> : 'Acessar'}
           </SignInButtonText>
         </SignInButton>
 

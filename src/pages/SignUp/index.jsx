@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { Text } from "react-native";
+import { useContext, useState } from "react";
+import { ActivityIndicator, Keyboard, Text } from "react-native";
+import { AuthContext } from "../../Contexts/AuthContext";
 import { useNavigation } from "@react-navigation/native";
 import Feather from 'react-native-vector-icons/Feather'
 import { 
@@ -16,11 +17,25 @@ import {
 } from "./styles";
 
 export function SignUp() {
+  const { onSignUp, authLoading } = useContext(AuthContext);
+
   const navigation = useNavigation();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  async function handleSignUp() {
+    if (name.trim() === '' || email.trim() === '' || password.trim() === '') {
+      return;
+    }
+
+    Keyboard.dismiss();
+    await onSignUp(name, email, password);
+    setName('');
+    setEmail('');
+    setPassword('');
+  }
 
   return (
     <SingUpContainer>
@@ -54,11 +69,11 @@ export function SignUp() {
         />
 
         <SignInButton 
-          onPress={() => console.log('Fazer login')}
+          onPress={authLoading ? () => {} : handleSignUp}
           activeOpacity={0.8}
         >
           <SignInButtonText>
-            Cadastrar
+            {authLoading ? <ActivityIndicator size={24} color="#FFF" /> : 'Cadastrar'}
           </SignInButtonText>
         </SignInButton>
 
