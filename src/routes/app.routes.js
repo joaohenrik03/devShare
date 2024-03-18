@@ -2,8 +2,9 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import { Home } from "../pages/Home";
+import { Profile } from "../pages/Profile";
 
-import Feather from 'react-native-vector-icons/Feather'
+import Feather from 'react-native-vector-icons/Feather';
 
 const BottomTab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -54,7 +55,7 @@ export function AppRoutes() {
       />
       <BottomTab.Screen 
         name="Profile" 
-        component={Home} 
+        component={Profile} 
         options={{
           tabBarIcon: ({color, size}) => <Feather color={color} name="user" size={size} />
         }}

@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { ActivityIndicator, Text } from "react-native";
+import { ActivityIndicator, Keyboard, Text } from "react-native";
 import { AuthContext } from "../../Contexts/AuthContext";
 import { useNavigation } from "@react-navigation/native";
 import { 
@@ -23,7 +23,14 @@ export function SignIn() {
   const [password, setPassword] = useState('');
 
   function handleSignIn() {
+    if (email.trim() === '' || password.trim() === '') {
+      return;
+    }
+
+    Keyboard.dismiss();
     onSignIn(email, password);
+    setEmail('');
+    setPassword('');
   }
 
   return (

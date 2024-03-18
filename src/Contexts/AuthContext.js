@@ -53,7 +53,6 @@ export function AuthContextProvider({children}) {
 
             setUser(userData);
             setUserInLocalStorage(userData);
-            setConnected(true);
             setAuthLoading(false);
           })
           .catch((error) => {
@@ -90,7 +89,6 @@ export function AuthContextProvider({children}) {
 
             setUser(userData);
             setUserInLocalStorage(userData);
-            setConnected(true);
             setAuthLoading(false);
           })
           .catch((error) => {
@@ -105,6 +103,20 @@ export function AuthContextProvider({children}) {
       })
   }
 
+  async function onSignOut() {
+    setFullLoading(true);
+
+    try {
+      await AsyncStorage.clear();
+      setUser(null);
+
+      setFullLoading(false);
+    } catch (error) {
+      console.log(error);
+      setFullLoading(false);
+    }
+  }
+
   async function setUserInLocalStorage(userData) {
     await AsyncStorage.setItem('@devShare-1.0.0', JSON.stringify(userData));
   };
@@ -115,7 +127,8 @@ export function AuthContextProvider({children}) {
       authLoading,
       fullLoading,
       onSignUp,
-      onSignIn
+      onSignIn,
+      onSignOut
     }}>
       {children}
     </AuthContext.Provider>
