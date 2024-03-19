@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import MaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
 import { 
   Avatar, 
@@ -12,31 +13,33 @@ import {
   TimePost 
 } from "./styles";
 
-export function Post() {
+export function Post({data, userId}) {
+  const [likesPost, setLikesPost] = useState(data.likes);
+
   const defaultAvatarUrl = require('../../../../assets/avatar.png');
 
   return (
     <PostContainer>
       <PostHeader>
-        <Avatar source={defaultAvatarUrl} />
+        <Avatar source={data.avatarUrl ? {uri: data.avatarUrl} : defaultAvatarUrl} />
 
         <PostAuthor numberOfLines={1}>
-          Nome
+          {data.author}
         </PostAuthor>
       </PostHeader>     
 
       <PostContent>
         <PostText>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. At dolore voluptatem soluta consequuntur, corrupti veniam temporibus deserunt nostrum facilis nulla optio provident corporis? Vitae quasi iure officiis debitis cupiditate aut?
+          {data.content}
         </PostText>
       </PostContent>
 
       <PostFooter>
         <LikeButton onPress={() => {console.log('Like current post')}}>
-          <LikeText>1</LikeText>
+          {likesPost !== 0 && <LikeText>{likesPost}</LikeText>}
 
           <MaterialCommunity
-            name={true ? "heart-plus-outline" : "cards-heart"}
+            name={likesPost === 0 ? "heart-plus-outline" : "cards-heart"}
             size={20}
             color="#e52246"
           />
