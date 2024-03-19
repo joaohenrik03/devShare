@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { formatDistance } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 import MaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
 import { 
   Avatar, 
@@ -17,6 +19,12 @@ export function Post({data, userId}) {
   const [likesPost, setLikesPost] = useState(data.likes);
 
   const defaultAvatarUrl = require('../../../../assets/avatar.png');
+
+  const dateFormatted = () => {
+    const datePost = data.created.seconds * 1000;
+
+    return formatDistance(new Date(), datePost, { locale: ptBR });
+  };
 
   return (
     <PostContainer>
@@ -46,7 +54,7 @@ export function Post({data, userId}) {
         </LikeButton>
 
         <TimePost>
-          Há 10 minutos
+          Há {dateFormatted()}
         </TimePost>
       </PostFooter>
     </PostContainer>
