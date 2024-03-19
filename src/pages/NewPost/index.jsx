@@ -1,23 +1,17 @@
 import { useContext, useLayoutEffect, useState } from "react";
+import { ActivityIndicator } from "react-native";
 import { AuthContext } from "../../Contexts/AuthContext";
 import { useNavigation } from "@react-navigation/native";
 import firestore from '@react-native-firebase/firestore'
 import { NewPostContainer, NewPostInput, ShareButton, ShareText } from "./styles";
 
 export function NewPost() {
-
-  //
-  //
-  // ATÉ AGORA TUDO CERTO, ADD FUNCIONALIDADE PARA BLOQUEAR BOTÃO DE COMPARTILHAR
-  // ENQUANTO TIVER FAZENDO ADICIONANDO O POST NO BANCO DE DADOS
-  //
-  //
-
   const navigation = useNavigation();
 
   const { user } = useContext(AuthContext);
 
   const [newPostText, setNewPostText] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useLayoutEffect(() => {
     const options = navigation.setOptions({
@@ -27,7 +21,11 @@ export function NewPost() {
           onPress={handleCreateNewPost}
         >
           <ShareText>
-            Compartilhar
+            {loading ? (
+              <ActivityIndicator size={20} color={'#FFF'} />
+            ) : (
+              'Compartilhar'
+            )}
           </ShareText>
         </ShareButton>   
       )
@@ -35,6 +33,8 @@ export function NewPost() {
   }, [navigation, newPostText]);
 
   async function handleCreateNewPost() {
+    setLoading(true);
+
     if (newPostText.trim() === '') { 
       alert('Nada digitado!')
       return; 
@@ -45,7 +45,7 @@ export function NewPost() {
     try {
       let response = await storage().ref('users').child(user?.uid).getDownloadURL();
 
-      avatarUrl = response
+      avatarUrl = response;
     }catch(error) {
       avatarUrl = null;
     }
@@ -60,8 +60,14 @@ export function NewPost() {
         avatarUrl,
         likes: 0
       })
-      .then(() => setNewPostText(''))
-      .catch((error) => console.log(error))
+      .then(() => {
+        setNewPostText('');
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log(error);
+      })
 
       navigation.goBack();
   }
