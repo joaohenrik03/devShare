@@ -41,7 +41,8 @@ export function Home() {
                 }); 
               });
 
-              setEmptyList(Boolean(snapshot.empty))
+              setEmptyList(Boolean(snapshot.empty));
+              setLastPost(snapshot.docs[snapshot.docs.length - 1]);
               setPosts(tempPosts);
               setLoading(false);
             }
@@ -79,7 +80,7 @@ export function Home() {
 
         setEmptyList(false);
         setPosts(tempPosts);
-        setLastPost(snapshot.docs[snapshot.length -1]);
+        setLastPost(snapshot.docs[snapshot.docs.length - 1]);
         setLoading(false);
       })
       .catch((error) => {
@@ -87,6 +88,42 @@ export function Home() {
       })
 
     setLoadingRefresh(false);
+  }
+
+  async function handleGetNewPostsList() {
+    if (emptyList) {
+      setLoading(false);
+      return;
+    };
+
+    if (loading) {
+      return;
+    };
+
+    await firestore()
+      .collection('posts')
+      .orderBy('created', 'desc')
+      .limit(5)
+      .startAfter(lastPost)
+      .get()
+      .then((snapshot) => {
+        let tempPosts = [];
+
+        snapshot.docs.map((item) => {
+          tempPosts.push({
+            ...item.data(),
+            id: item.id
+          });
+        });
+
+        setEmptyList(Boolean(snapshot.empty));
+        setLastPost(snapshot.docs[snapshot.docs.length - 1]);
+        setPosts((oldValue) => [...oldValue, ...tempPosts]);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   return (
@@ -99,6 +136,7 @@ export function Home() {
         renderItem={(dataPost) => <Post data={dataPost.item} userId={user.uid} />}
         onRefresh={handleRefreshPosts}
         refreshing={loadingRefresh}
+        onEndReached={handleGetNewPostsList}
         showsVerticalScrollIndicator={false}
       />
 
