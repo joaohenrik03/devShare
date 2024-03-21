@@ -12,7 +12,9 @@ export function Home() {
 
   const [posts, setPosts] = useState([]);
   const [emptyList, setEmptyList] = useState(false);
+  const [lastPost, setLastPost] = useState('');
   const [loading, setLoading] = useState(false);
+  const [loadingRefresh, setLoadingRefresh] = useState(false);
 
   // fetchPosts function is here
   useFocusEffect(
@@ -56,6 +58,37 @@ export function Home() {
     }, [])
   );
 
+  async function handleRefreshPosts() {
+    setLoadingRefresh(true);
+
+    await firestore()
+      .collection('posts')
+      .orderBy('created', 'desc')
+      .limit(5)
+      .get()
+      .then((snapshot) => {
+        const tempPosts = [];
+        setPosts([]);
+
+        snapshot.docs.map((item) => {
+          tempPosts.push({
+            ...item.data(),
+            id: item.id
+          })
+        });
+
+        setEmptyList(false);
+        setPosts(tempPosts);
+        setLastPost(snapshot.docs[snapshot.length -1]);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+
+    setLoadingRefresh(false);
+  }
+
   return (
     <HomeContainer>
       <Header />
@@ -64,6 +97,9 @@ export function Home() {
         data={posts}
         keyExtractor={(post) => post.id}
         renderItem={(dataPost) => <Post data={dataPost.item} userId={user.uid} />}
+        onRefresh={handleRefreshPosts}
+        refreshing={loadingRefresh}
+        showsVerticalScrollIndicator={false}
       />
 
       <LinkToSearch />
