@@ -5,6 +5,7 @@ import { Home } from "../pages/Home";
 import { Profile } from "../pages/Profile";
 import { NewPost } from "../pages/NewPost";
 import { PostsUser } from "../pages/PostsUser";
+import { Search } from "../pages/Search";
 
 import Feather from 'react-native-vector-icons/Feather';
 
@@ -67,7 +68,7 @@ export function AppRoutes() {
       />
       <BottomTab.Screen 
         name="Search" 
-        component={Home} 
+        component={Search} 
         options={{
           tabBarIcon: ({color, size}) => <Feather color={color} name="search" size={size} />
         }}
