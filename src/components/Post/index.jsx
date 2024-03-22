@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import firestore from '@react-native-firebase/firestore';
 import { formatDistance } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import MaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -16,19 +18,67 @@ import {
 } from "./styles";
 
 export function Post({data, userId}) {
+  const { navigate } = useNavigation();
+
   const [likesPost, setLikesPost] = useState(data.likes);
 
-  const defaultAvatarUrl = require('../../../../assets/avatar.png');
+  const defaultAvatarUrl = require('../../assets/avatar.png');
 
   const dateFormatted = () => {
     const datePost = data.created.seconds * 1000;
 
     return formatDistance(new Date(), datePost, { locale: ptBR });
   };
+  
+  async function handleLikePost(id, likes) {
+    const docId = `${userId}_${id}`;
+
+    const doc = await firestore()
+      .collection('likes')
+      .doc(docId)
+      .get();
+
+    if(doc.exists) {
+      await firestore()
+        .collection('posts')
+        .doc(id)
+        .update({
+          likes: likes - 1
+        });
+
+      await firestore()
+        .collection('likes')
+        .doc(docId)
+        .delete()
+        .then(() => {
+          setLikesPost(oldValue => oldValue - 1);
+        });
+
+      return;
+    };
+
+    await firestore()
+      .collection('likes')
+      .doc(docId)
+      .set({
+        postId: id,
+        userId,
+      });
+
+    await firestore()
+      .collection('posts')
+      .doc(id)
+      .update({
+        likes: likes + 1
+      })
+      .then(() => {
+        setLikesPost(oldValue => oldValue + 1);
+      });
+  };
 
   return (
     <PostContainer>
-      <PostHeader>
+      <PostHeader onPress={() => navigate('PostsUser', { title: data.author, userId: userId })}>
         <Avatar source={data.avatarUrl ? {uri: data.avatarUrl} : defaultAvatarUrl} />
 
         <PostAuthor numberOfLines={1}>
@@ -43,7 +93,7 @@ export function Post({data, userId}) {
       </PostContent>
 
       <PostFooter>
-        <LikeButton onPress={() => {console.log('Like current post')}}>
+        <LikeButton onPress={() => handleLikePost(data.id, likesPost)}>
           {likesPost !== 0 && <LikeText>{likesPost}</LikeText>}
 
           <MaterialCommunity

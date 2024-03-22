@@ -7,7 +7,7 @@ export const PostContainer = styled.View`
   padding: 8px;
 `;
 
-export const PostHeader = styled.View`
+export const PostHeader = styled.TouchableOpacity`
   flex-direction: row;
   gap: 12px;
   align-items: center;

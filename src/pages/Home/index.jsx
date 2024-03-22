@@ -3,7 +3,7 @@ import firestore from '@react-native-firebase/firestore';
 import { AuthContext } from "../../Contexts/AuthContext";
 import { useFocusEffect } from "@react-navigation/native";
 import { Header } from "../../components/Header";
-import { Post } from "./components/Post";
+import { Post } from "../../components/Post";
 import { LinkToSearch } from "./components/LinkToSearch/LinkToSearch";
 import { HomeContainer, PostList } from "./styles";
 

@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Home } from "../pages/Home";
 import { Profile } from "../pages/Profile";
 import { NewPost } from "../pages/NewPost";
+import { PostsUser } from "../pages/PostsUser";
 
 import Feather from 'react-native-vector-icons/Feather';
 
@@ -25,6 +26,16 @@ function AppRoutesStack() {
         component={NewPost} 
         options={{
           title: 'Novo post',
+          headerTintColor: '#FFF',
+          headerStyle: {
+            backgroundColor: '#36393f'
+          }
+        }}
+      />
+      <Stack.Screen
+        name="PostsUser"
+        component={PostsUser}
+        options={{
           headerTintColor: '#FFF',
           headerStyle: {
             backgroundColor: '#36393f'
