@@ -1,4 +1,3 @@
-import { Text } from "react-native";
 import { HeaderContainer, Title } from "./styles";
 
 export function Header() {
