@@ -22,7 +22,7 @@ export function Search() {
       return;
     }
 
-    firestore()
+    const search = firestore()
       .collection('users')
       .where('name', '>=', textInput)
       .where('name', '<=', textInput + '\uf8ff')
@@ -35,9 +35,11 @@ export function Search() {
             id: user.id
           });
         });
-
+ 
         setUsers(tempList);
       });
+
+    return () => search();
   }, [textInput, setUsers]);
 
   return (

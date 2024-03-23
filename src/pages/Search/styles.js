@@ -37,5 +37,4 @@ export const ListUser = styled.TouchableOpacity`
 export const ListUserText = styled.Text`
   color: #FFF;
   font-size: 18px;
-  max-lines: 1;
 `;
