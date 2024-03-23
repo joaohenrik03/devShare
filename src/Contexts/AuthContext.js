@@ -126,9 +126,11 @@ export function AuthContextProvider({children}) {
       user,
       authLoading,
       fullLoading,
+      setUser,
       onSignUp,
       onSignIn,
-      onSignOut
+      onSignOut,
+      setUserInLocalStorage
     }}>
       {children}
     </AuthContext.Provider>
